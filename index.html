@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Prenovation – AI Research Visualizations</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      max-width: 700px;
+      margin: 60px auto;
+      padding: 0 20px;
+      color: #222;
+    }
+    h1 { font-size: 28px; margin-bottom: 8px; }
+    p { color: #555; margin-bottom: 32px; }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 24px;
+      margin-bottom: 16px;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: box-shadow 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card h2 { margin: 0 0 6px; font-size: 18px; }
+    .card p { margin: 0; font-size: 14px; color: #777; }
+  </style>
+</head>
+<body>
+  <h1>AI Research Landscape in Sweden</h1>
+  <p>Interactive visualizations of academic research across Sweden's leading universities, powered by clustering of AI research papers.</p>
+
+  <a class="card" href="scatter.html">
+    <h2>📍 Research Scatter Plot</h2>
+    <p>Explore individual papers by topic cluster across all institutes. Filter by university using the buttons.</p>
+  </a>
+
+  <a class="card" href="treemap.html">
+    <h2>🗺️ Topic Treemap</h2>
+    <p>Compare topic distributions across institutes over time. Use the year slider and toggle between grouping modes.</p>
+  </a>
+</body>
+</html>
