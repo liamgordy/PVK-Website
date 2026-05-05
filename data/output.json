@@ -1,0 +1,100 @@
+[
+    {
+      "title":"Reinforcement Learning Control",
+      "category":"Reinforcement Learning",
+      "x":2.5690279007,
+      "y":0.0660927743,
+      "cluster":1
+    },
+    {
+      "title":"Multi-Agent RL Framework",
+      "category":"Reinforcement Learning",
+      "x":3.7254722118,
+      "y":0.0907675177,
+      "cluster":1
+    },
+    {
+      "title":"Transformer Summarization",
+      "category":"NLP",
+      "x":4.1605410576,
+      "y":2.4284439087,
+      "cluster":0
+    },
+    {
+      "title":"Contextual Word Embeddings",
+      "category":"NLP",
+      "x":4.7971725464,
+      "y":2.0834820271,
+      "cluster":0
+    },
+    {
+      "title":"CNN Image Classification",
+      "category":"Computer Vision",
+      "x":3.6171679497,
+      "y":1.5948512554,
+      "cluster":0
+    },
+    {
+      "title":"Vision Transformer Detection",
+      "category":"Computer Vision",
+      "x":3.9974963665,
+      "y":2.9535725117,
+      "cluster":0
+    },
+    {
+      "title":"Graph Neural Networks Citation",
+      "category":"Graph Neural Networks",
+      "x":3.4630746841,
+      "y":2.4185345173,
+      "cluster":0
+    },
+    {
+      "title":"Graph Convolution Molecules",
+      "category":"Graph Neural Networks",
+      "x":4.566845417,
+      "y":1.3575689793,
+      "cluster":2
+    },
+    {
+      "title":"GAN Image Synthesis",
+      "category":"Generative Models",
+      "x":2.6721634865,
+      "y":1.3626986742,
+      "cluster":4
+    },
+    {
+      "title":"Diffusion Probabilistic Models",
+      "category":"Generative Models",
+      "x":2.1621825695,
+      "y":0.9108415842,
+      "cluster":4
+    },
+    {
+      "title":"RNN Time Series Forecasting",
+      "category":"Time Series",
+      "x":4.2798585892,
+      "y":0.7851625681,
+      "cluster":2
+    },
+    {
+      "title":"Temporal Convolution Networks",
+      "category":"Time Series",
+      "x":4.5508089066,
+      "y":0.3490840793,
+      "cluster":2
+    },
+    {
+      "title":"Explainable AI Framework",
+      "category":"Explainable AI",
+      "x":1.8530030251,
+      "y":-0.028257275,
+      "cluster":3
+    },
+    {
+      "title":"SHAP Counterfactual Explanations",
+      "category":"Explainable AI",
+      "x":1.5646824837,
+      "y":0.4766116738,
+      "cluster":3
+    }
+  ]
