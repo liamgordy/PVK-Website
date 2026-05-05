@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Visualisations</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+</head>
+<body onload="main()" style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column;">
+
+  <div style="margin-bottom:10px;">
+    <button onclick="toggleMode()">Show Topics as Colors</button>
+  </div>
+
+  <svg width="950" height="620"></svg>
+  <div id="year-slider" style="width:300px; margin:20px;"></div>
+
+  <script>
+    let inverted = false;
+    let svg, g, tooltip;
+    let dataset = [];
+
+    function main() {
+      const width = 950, height = 620;
+
+      svg = d3.select("svg")
+        .attr("viewBox", [0, 0, width, height])
+        .style("font-family", "sans-serif");
+
+      g = svg.append("g");
+
+      tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "rgba(0,0,0,0.85)")
+        .style("color", "white")
+        .style("padding", "8px 10px")
+        .style("border-radius", "6px")
+        .style("font-size", "13px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
+      const targetInstitutes = new Set([
+        "KTH Royal Institute of Technology",
+        "Lund University",
+        "Uppsala University",
+        "Linköping University",
+        "Chalmers University of Technology",
+        "Stockholm University",
+        "Karolinska Institutet"
+      ]);
+
+      // *** REPLACE THIS URL with the WordPress media URL for outputGlobal.json ***
+      d3.json("data/outputGlobal.json").then(rawData => {
+        dataset = [];
+        rawData.forEach(paper => {
+          const year = +paper.publication_year;
+          if (!year || isNaN(year)) return;
+
+          const institutes = Object.values(paper.authorship).flat();
+          const uniqueInstitutes = [...new Set(institutes)].filter(i => targetInstitutes.has(i));
+          uniqueInstitutes.forEach(institute => {
+            dataset.push({
+              ...paper,
+              institute,
+              cluster: String(paper.cluster),
+              publication_year: year
+            });
+          });
+        });
+
+        const years = dataset.map(d => d.publication_year).filter(y => y > 1000 && y <= new Date().getFullYear());
+        const minYear = d3.min(years);
+        const maxYear = d3.max(years);
+
+        const badYears = rawData.filter(d => !d.publication_year || isNaN(+d.publication_year));
+        console.log("Records with missing/invalid year:", badYears.length);
+        console.log("Sample bad record:", badYears[0]);
+
+        const slider = document.getElementById('year-slider');
+        noUiSlider.create(slider, {
+          start: [minYear, maxYear],
+          connect: true,
+          step: 1,
+          range: { min: minYear, max: maxYear },
+          tooltips: [true, true],
+          format: { to: v => parseInt(v), from: v => parseInt(v) }
+        });
+
+        update(minYear, maxYear);
+
+        slider.noUiSlider.on('update', values => {
+          const [startYear, endYear] = values.map(Number);
+          update(startYear, endYear);
+        });
+      });
+    }
+
+    let colorScale = null;
+
+    function getColor(domainValues) {
+      if (!colorScale) {
+        colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+      }
+      const current = new Set(colorScale.domain());
+      const extended = [...current, ...domainValues.filter(v => !current.has(v))];
+      colorScale.domain(extended);
+      return colorScale;
+    }
+
+    function update(startYear, endYear) {
+      const width = 950, height = 620;
+
+      const data = dataset.filter(d =>
+        +d.publication_year >= startYear && +d.publication_year <= endYear
+      );
+
+      let nested, totals;
+
+      if (!inverted) {
+        nested = d3.rollups(data, v => v.length, d => d.institute, d => d.cluster);
+        totals = new Map(d3.rollups(data, v => v.length, d => d.institute));
+      } else {
+        nested = d3.rollups(data, v => v.length, d => d.cluster, d => d.institute);
+        totals = new Map(d3.rollups(data, v => v.length, d => d.cluster));
+      }
+
+      const root = d3.hierarchy({
+        name: "root",
+        children: nested.map(([group, sub]) => ({
+          name: group,
+          children: sub.map(([name, count]) => ({ name, value: count }))
+        }))
+      })
+        .sum(d => d.value || 0)
+        .sort((a, b) => b.value - a.value);
+
+      d3.treemap()
+        .size([width - 230, height])
+        .paddingOuter(1)
+        .paddingInner(1)
+        (root);
+
+      const groups = root.children ? root.children.map(d => d.data.name) : [];
+      const color = getColor(groups);
+
+      const nodes = g.selectAll("g.node")
+        .data(root.leaves(), d => d.ancestors().map(a => a.data.name).join("/"));
+
+      const enter = nodes.enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x0},${d.y0})`);
+
+      enter.append("rect").attr("width", 0).attr("height", 0);
+      enter.append("text")
+        .attr("x", 4).attr("y", 14)
+        .style("fill", "white")
+        .style("font-size", "12px")
+        .style("pointer-events", "none");
+
+      const all = enter.merge(nodes);
+
+      all.transition().duration(800)
+        .attr("transform", d => `translate(${d.x0},${d.y0})`);
+
+      all.select("rect").transition().duration(800)
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.y1 - d.y0)
+        .attr("fill", d => color(d.parent.data.name));
+
+      all.select("text").each(function (d) {
+        const text = d3.select(this);
+        text.selectAll("tspan").remove();
+        text.style("opacity", 0);
+
+        const boxW = d.x1 - d.x0 - 8;
+        const boxH = d.y1 - d.y0 - 6;
+        if (boxW < 24 || boxH < 16) return;
+
+        const size = Math.max(6, Math.min(16, Math.sqrt((boxW * boxH) / 250)));
+        text.style("font-size", size + "px");
+
+        const approxCharW = size * 0.55;
+        const maxCharsPerLine = Math.floor(boxW / approxCharW);
+        const words = d.data.name.split(" ");
+        let lines = [], current = "";
+
+        for (const word of words) {
+          const candidate = current ? current + " " + word : word;
+          if (candidate.length <= maxCharsPerLine) {
+            current = candidate;
+          } else {
+            if (current) lines.push(current);
+            current = word;
+          }
+        }
+        if (current) lines.push(current);
+
+        const maxLines = Math.floor(boxH / (size * 1.3));
+        lines = lines.slice(0, maxLines);
+        if (lines.length === 0) return;
+
+        lines.forEach((line, i) => {
+          text.append("tspan")
+            .attr("x", 4)
+            .attr("y", size + 2)
+            .attr("dy", i === 0 ? 0 : "1.3em")
+            .text(line);
+        });
+
+        text.transition().delay(650).duration(300).style("opacity", 1);
+      });
+
+      const outerLabel = inverted ? "Topic (Cluster)" : "Institute";
+      const innerLabel = inverted ? "Institute" : "Topic (Cluster)";
+
+      all
+        .on("mousemove", (e, d) => {
+          const parent = d.parent.data.name;
+          const count = d.value;
+          const total = totals.get(parent) || 1;
+          const pct = ((count / total) * 100).toFixed(1);
+          tooltip
+            .style("opacity", 1)
+            .html(`
+              <b>${d.data.name}</b><br>
+              ${outerLabel}: ${parent}<br>
+              Articles: ${count}<br>
+              Share: ${pct}%
+            `)
+            .style("left", (e.pageX + 14) + "px")
+            .style("top", (e.pageY + 14) + "px");
+        })
+        .on("mouseleave", () => tooltip.style("opacity", 0));
+
+      nodes.exit().transition().duration(500).style("opacity", 0).remove();
+
+      svg.selectAll(".legend").remove();
+      const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${width - 220},40)`);
+
+      groups.forEach((group, i) => {
+        const row = legend.append("g").attr("transform", `translate(0,${i * 28})`);
+        row.append("rect").attr("width", 18).attr("height", 18).attr("fill", color(group));
+        row.append("text").attr("x", 26).attr("y", 14).text(group).style("font-size", "13px");
+      });
+    }
+
+    function toggleMode() {
+      const slider = document.getElementById('year-slider');
+      if (!slider.noUiSlider || dataset.length === 0) {
+        console.warn("Data not loaded yet.");
+        return;
+      }
+      const button = d3.select("button");
+      button.property("disabled", true);
+      inverted = !inverted;
+      g.selectAll("g.node").remove();
+      button.text(inverted ? "Show Institutes as Colors" : "Show Topics as Colors");
+      const [startYear, endYear] = slider.noUiSlider.get().map(Number);
+      update(startYear, endYear);
+      setTimeout(() => button.property("disabled", false), 900);
+    }
+  </script>
+
+</body>
+</html>
