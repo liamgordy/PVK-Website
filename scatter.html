@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <title>Scatterplot</title>
+</head>
+<body onload="main()" style="margin:0; display:flex; flex-direction:column; align-items:center;">
+
+  <div style="margin:20px;">
+    <button onclick="loadFile('data/outputKTH.json')">KTH</button>
+    <button onclick="loadFile('data/outputUpp.json')">Uppsala University</button>
+    <button onclick="loadFile('data/outputChal.json')">Chalmers University</button>
+    <button onclick="loadFile('data/outputKar.json')">Karolinska Institutet</button>
+    <button onclick="loadFile('data/outputLi.json')">Linköping University</button>
+    <button onclick="loadFile('data/outputSU.json')">Stockholm University</button>
+    <button onclick="loadFile('data/outputLun.json')">Lund University</button>
+  </div>
+
+  <svg width="1200" height="600"></svg>
+
+  <script>
+    let svg, g, tooltip;
+    let dataset = [];
+
+    function main() {
+      const width = 950, height = 600;
+      svg = d3.select("svg")
+        .attr("viewBox", [0, 0, width, height]);
+      g = svg.append("g");
+
+      tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("background", "rgba(0,0,0,0.85)")
+        .style("color", "white")
+        .style("padding", "8px 10px")
+        .style("border-radius", "6px")
+        .style("font-size", "13px")
+        .style("pointer-events", "none")
+        .style("opacity", 0);
+
+      // Load default dataset
+      loadFile("data/outputKTH.json");
+    }
+
+    function loadFile(file) {
+      d3.json(file).then(data => {
+        dataset = data;
+        update();
+      });
+    }
+
+    function update() {
+      const width = 800, height = 600;
+      g.selectAll("*").remove();
+
+      const xScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, d => +d.x))
+        .range([40, width - 40]);
+
+      const yScale = d3.scaleLinear()
+        .domain(d3.extent(dataset, d => +d.y))
+        .range([height - 40, 40]);
+
+      const sizeScale = d3.scaleSqrt()
+        .domain(d3.extent(dataset, d => +d.cited_by_count))
+        .range([4, 12]);
+
+      const subGenres = Array.from(new Set(dataset.map(d => d["cluster"])));
+      const color = d3.scaleOrdinal(d3.schemeTableau10).domain(subGenres);
+
+      const points = g.selectAll("circle")
+        .data(dataset, d => d.title);
+
+      points.enter()
+        .append("circle")
+        .attr("cx", d => xScale(+d.x))
+        .attr("cy", d => yScale(+d.y))
+        .attr("r", 0)
+        .attr("fill", d => color(d["cluster"]))
+        .attr("opacity", 0.8)
+        .on("mousemove", (e, d) => {
+          tooltip
+            .style("opacity", 1)
+            .html(`
+              <b>${d.title}</b><br>
+              Topic: ${d["cluster"]}<br>
+              Year: ${d.publication_year}<br>
+              Citations: ${d.cited_by_count}
+            `)
+            .style("left", (e.pageX + 14) + "px")
+            .style("top", (e.pageY + 14) + "px");
+        })
+        .on("mouseleave", () => tooltip.style("opacity", 0))
+        .transition()
+        .duration(600)
+        .attr("r", d => sizeScale(+d.cited_by_count));
+
+      const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
+
+      g.append("g")
+        .attr("transform", `translate(0,${height - 40})`)
+        .call(xAxis);
+
+      g.append("g")
+        .attr("transform", `translate(40,0)`)
+        .call(yAxis);
+
+      svg.selectAll(".legend").remove();
+      const legend = svg.append("g")
+        .attr("class", "legend")
+        .attr("transform", `translate(${width}, 40)`);
+
+      subGenres.forEach((genre, i) => {
+        const row = legend.append("g")
+          .attr("transform", `translate(0, ${i * 25})`);
+        row.append("rect")
+          .attr("width", 18)
+          .attr("height", 18)
+          .attr("fill", color(genre));
+        row.append("text")
+          .attr("x", 24)
+          .attr("y", 14)
+          .text(genre)
+          .style("font-size", "12px");
+      });
+    }
+  </script>
+
+</body>
+</html>
