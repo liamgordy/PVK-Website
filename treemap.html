@@ -18,13 +18,25 @@
       <li><a href="treemap.html">Treemap</a></li>
     </ul>
   </nav>
+  <div class="body-content">
 
   <div class="treemap-controls">
     <button class="control-button" onclick="toggleMode()">Show Topics as Colors</button>
   </div>
 
-  <svg class="treemap-svg" width="950" height="620"></svg>
-  <div id="year-slider" class="slider"></div>
+  <div class="treemap-layout">
+    <div class="treemap-content">
+      <svg class="treemap-svg" width="950" height="620"></svg>
+      <div id="year-slider" class="slider"></div>
+    </div>
+
+    <aside class="treemap-info">
+      <div class="info-box">
+        <h3>Graph explanation</h3>
+        <p>This treemap shows article counts by institute and topic cluster. Hover a tile for details, and use the year slider to filter. The legend to the right matches the tile colors.</p>
+      </div>
+    </aside>
+  </div>
 
   
 
@@ -269,6 +281,7 @@
       setTimeout(() => button.property("disabled", false), 900);
     }
   </script>
+  </div>
 
 </body>
 </html>

@@ -105,7 +105,7 @@
 
       const xScale = d3.scaleLinear()
         .domain(d3.extent(dataset, d => +d.x))
-        .range([10, width - 40]);
+        .range([10, width  ]);
 
       const yScale = d3.scaleLinear()
         .domain(d3.extent(dataset, d => +d.y))
@@ -145,8 +145,8 @@
         .duration(600)
         .attr("r", d => sizeScale(+d.cited_by_count));
 
- //     const xAxis = d3.axisBottom(xScale);
-//      const yAxis = d3.axisLeft(yScale);
+      /*const xAxis = d3.axisBottom(xScale);
+      const yAxis = d3.axisLeft(yScale);
 
       g.append("g")
         .attr("transform", `translate(0,${height - 40})`)
@@ -154,12 +154,13 @@
 
       g.append("g")
         .attr("transform", `translate(40,0)`)
-        .call(yAxis);
+        .call(yAxis);*/
 
       svg.selectAll(".legend").remove();
       const legend = svg.append("g")
         .attr("class", "legend")
-        .attr("transform", `translate(${width}, 40)`);
+        // place legend just to the right of the plot border
+        .attr("transform", `translate(${width + 12}, 40)`);
 
       subGenres.forEach((genre, i) => {
         const row = legend.append("g")
