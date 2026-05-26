@@ -17,21 +17,66 @@
     </ul>
   </nav>
 
-  <div class="scatter-controls">
-    <button class="control-button" onclick="loadFile('data/outputKTH.json')">KTH</button>
-    <button class="control-button" onclick="loadFile('data/outputUpp.json')">Uppsala University</button>
-    <button class="control-button" onclick="loadFile('data/outputChal.json')">Chalmers University</button>
-    <button class="control-button" onclick="loadFile('data/outputKar.json')">Karolinska Institutet</button>
-    <button class="control-button" onclick="loadFile('data/outputLi.json')">Linköping University</button>
-    <button class="control-button" onclick="loadFile('data/outputSU.json')">Stockholm University</button>
-    <button class="control-button" onclick="loadFile('data/outputLun.json')">Lund University</button>
-  </div>
+  <div class="scatter-layout">
+    <aside class="scatter-sidebar">
+      <div class="scatter-university-list">
+        <button class="control-button university-button active" onclick="selectUniversity(this, 'data/outputKTH.json')">
+          <img class="university-logo" src="logos/logotype-blue-ff671d438dd60cb940a663d2fd5e0cf9.svg" alt="KTH logo">
+          <span>KTH</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputUpp.json')">
+          <img class="university-logo" src="logos/Uppsala_University_logo.svg.png" alt="Uppsala University logo">
+          <span>Uppsala University</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputChal.json')">
+          <img class="university-logo" src="logos/chalmers_c_logo.jpg" alt="Chalmers University logo">
+          <span>Chalmers University</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputKar.json')">
+          <img class="university-logo" src="logos/images.jpeg" alt="Karolinska Institutet logo">
+          <span>Karolinska Institutet</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLi.json')">
+          <img class="university-logo" src="logos/site-logo.png" alt="Linköping University logo">
+          <span>Linköping University</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputSU.json')">
+          <img class="university-logo" src="logos/images%20(1).jpeg" alt="Stockholm University logo">
+          <span>Stockholm University</span>
+        </button>
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLun.json')">
+          <img class="university-logo" src="logos/Sigill_Lunds_universitet_(vit).png" alt="Lund University logo">
+          <span>Lund University</span>
+        </button>
+      </div>
+    </aside>
 
-  <svg class="scatter-svg" width="1200" height="600"></svg>
+    <div class="scatter-content">
+      <svg class="scatter-svg" width="1200" height="600"></svg>
+    </div>
+
+    <aside class="scatter-info">
+      <div class="info-box">
+        <h3>Graph explanation</h3>
+        <p>Each circle is a paper from the selected university. The x/y positions reflect embedded semantic coordinates, colors show topic cluster, and circle size scales with citation count. Hover a point for title, year, and citations.</p>
+      </div>
+    </aside>
+  </div>
 
   <script>
     let svg, g, tooltip;
     let dataset = [];
+
+    function selectUniversity(button, file) {
+      // Remove active class from all buttons
+      document.querySelectorAll('.university-button').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      // Add active class to clicked button
+      button.classList.add('active');
+      // Load the file
+      loadFile(file);
+    }
 
     function main() {
       const width = 950, height = 600;
