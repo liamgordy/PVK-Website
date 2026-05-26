@@ -6,15 +6,25 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.css" rel="stylesheet">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.0/nouislider.min.js"></script>
+  <link rel="stylesheet" href="styling.css">
 </head>
-<body onload="main()" style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column;">
+<body onload="main()" class="page page-treemap">
 
-  <div style="margin-bottom:10px;">
-    <button onclick="toggleMode()">Show Topics as Colors</button>
+  <nav>
+    <a class="nav-logo" href="/">Preno<span>vation</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="scatter.html">Scatter Plot</a></li>
+      <li><a href="treemap.html">Treemap</a></li>
+    </ul>
+  </nav>
+
+  <div class="treemap-controls">
+    <button class="control-button" onclick="toggleMode()">Show Topics as Colors</button>
   </div>
 
-  <svg width="950" height="620"></svg>
-  <div id="year-slider" style="width:300px; margin:20px;"></div>
+  <svg class="treemap-svg" width="950" height="620"></svg>
+  <div id="year-slider" class="slider"></div>
 
   <script>
     let inverted = false;
@@ -25,21 +35,13 @@
       const width = 950, height = 620;
 
       svg = d3.select("svg")
-        .attr("viewBox", [0, 0, width, height])
-        .style("font-family", "sans-serif");
+        .attr("viewBox", [0, 0, width, height]);
 
       g = svg.append("g");
 
       tooltip = d3.select("body")
         .append("div")
-        .style("position", "absolute")
-        .style("background", "rgba(0,0,0,0.85)")
-        .style("color", "white")
-        .style("padding", "8px 10px")
-        .style("border-radius", "6px")
-        .style("font-size", "13px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
+        .attr("class", "tooltip");
 
       const targetInstitutes = new Set([
         "KTH Royal Institute of Technology",

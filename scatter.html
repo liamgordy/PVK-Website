@@ -4,20 +4,30 @@
   <meta charset="UTF-8">
   <script src="https://d3js.org/d3.v7.min.js"></script>
   <title>Scatterplot</title>
+  <link rel="stylesheet" href="styling.css">
 </head>
-<body onload="main()" style="margin:0; display:flex; flex-direction:column; align-items:center;">
+<body onload="main()" class="page page-scatter">
 
-  <div style="margin:20px;">
-    <button onclick="loadFile('data/outputKTH.json')">KTH</button>
-    <button onclick="loadFile('data/outputUpp.json')">Uppsala University</button>
-    <button onclick="loadFile('data/outputChal.json')">Chalmers University</button>
-    <button onclick="loadFile('data/outputKar.json')">Karolinska Institutet</button>
-    <button onclick="loadFile('data/outputLi.json')">Linköping University</button>
-    <button onclick="loadFile('data/outputSU.json')">Stockholm University</button>
-    <button onclick="loadFile('data/outputLun.json')">Lund University</button>
+  <nav>
+    <a class="nav-logo" href="/">Preno<span>vation</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="scatter.html">Scatter Plot</a></li>
+      <li><a href="treemap.html">Treemap</a></li>
+    </ul>
+  </nav>
+
+  <div class="scatter-controls">
+    <button class="control-button" onclick="loadFile('data/outputKTH.json')">KTH</button>
+    <button class="control-button" onclick="loadFile('data/outputUpp.json')">Uppsala University</button>
+    <button class="control-button" onclick="loadFile('data/outputChal.json')">Chalmers University</button>
+    <button class="control-button" onclick="loadFile('data/outputKar.json')">Karolinska Institutet</button>
+    <button class="control-button" onclick="loadFile('data/outputLi.json')">Linköping University</button>
+    <button class="control-button" onclick="loadFile('data/outputSU.json')">Stockholm University</button>
+    <button class="control-button" onclick="loadFile('data/outputLun.json')">Lund University</button>
   </div>
 
-  <svg width="1200" height="600"></svg>
+  <svg class="scatter-svg" width="1200" height="600"></svg>
 
   <script>
     let svg, g, tooltip;
@@ -31,14 +41,7 @@
 
       tooltip = d3.select("body")
         .append("div")
-        .style("position", "absolute")
-        .style("background", "rgba(0,0,0,0.85)")
-        .style("color", "white")
-        .style("padding", "8px 10px")
-        .style("border-radius", "6px")
-        .style("font-size", "13px")
-        .style("pointer-events", "none")
-        .style("opacity", 0);
+        .attr("class", "tooltip");
 
       // Load default dataset
       loadFile("data/outputKTH.json");
@@ -57,7 +60,7 @@
 
       const xScale = d3.scaleLinear()
         .domain(d3.extent(dataset, d => +d.x))
-        .range([40, width - 40]);
+        .range([10, width - 40]);
 
       const yScale = d3.scaleLinear()
         .domain(d3.extent(dataset, d => +d.y))
