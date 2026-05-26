@@ -104,6 +104,7 @@ a {
   max-width: 200px;
   height: auto;
   display: block;
+  border: 2px solid black;
 }
 
 .scatter-university-list .control-button {

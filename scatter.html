@@ -145,8 +145,8 @@
         .duration(600)
         .attr("r", d => sizeScale(+d.cited_by_count));
 
-      const xAxis = d3.axisBottom(xScale);
-      const yAxis = d3.axisLeft(yScale);
+ //     const xAxis = d3.axisBottom(xScale);
+//      const yAxis = d3.axisLeft(yScale);
 
       g.append("g")
         .attr("transform", `translate(0,${height - 40})`)
