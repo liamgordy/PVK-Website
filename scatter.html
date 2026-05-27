@@ -17,34 +17,36 @@
     </ul>
   </nav>
 
+  <div class="body-content">
+
   <div class="scatter-layout">
     <aside class="scatter-sidebar">
       <div class="scatter-university-list">
-        <button class="control-button university-button active" onclick="selectUniversity(this, 'data/outputKTH.json')">
+        <button class="control-button university-button active" onclick="selectUniversity(this, 'data/outputKTH_labeled.json')">
           <img class="university-logo" src="logos/logotype-blue-ff671d438dd60cb940a663d2fd5e0cf9.svg" alt="KTH logo">
           <span>KTH</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputUpp.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputUpp_labeled.json')">
           <img class="university-logo" src="logos/Uppsala_University_logo.svg.png" alt="Uppsala University logo">
           <span>Uppsala University</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputChal.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputChal_labeled.json')">
           <img class="university-logo" src="logos/chalmers_c_logo.jpg" alt="Chalmers University logo">
           <span>Chalmers University</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputKar.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputKar_labeled.json')">
           <img class="university-logo" src="logos/images.jpeg" alt="Karolinska Institutet logo">
           <span>Karolinska Institutet</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLi.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLi_labeled.json')">
           <img class="university-logo" src="logos/site-logo.png" alt="Linköping University logo">
           <span>Linköping University</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputSU.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputSU_labeled.json')">
           <img class="university-logo" src="logos/images%20(1).jpeg" alt="Stockholm University logo">
           <span>Stockholm University</span>
         </button>
-        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLun.json')">
+        <button class="control-button university-button" onclick="selectUniversity(this, 'data/outputLun_labeled.json')">
           <img class="university-logo" src="logos/Sigill_Lunds_universitet_(vit).png" alt="Lund University logo">
           <span>Lund University</span>
         </button>
@@ -89,7 +91,7 @@
         .attr("class", "tooltip");
 
       // Load default dataset
-      loadFile("data/outputKTH.json");
+      loadFile("data/outputKTH_labeled.json");
     }
 
     function loadFile(file) {
@@ -116,7 +118,8 @@
         .range([4, 12]);
 
       const subGenres = Array.from(new Set(dataset.map(d => d["cluster"])));
-      const color = d3.scaleOrdinal(d3.schemeTableau10).domain(subGenres);
+      const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, subGenres.length)).domain(subGenres);
+      // const color = d3.scaleOrdinal(d3.schemeTableau10).domain(subGenres);
 
       const points = g.selectAll("circle")
         .data(dataset, d => d.title);
@@ -176,7 +179,10 @@
           .style("font-size", "12px");
       });
     }
+
   </script>
+
+</div>
 
 </body>
 </html>

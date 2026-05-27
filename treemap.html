@@ -26,7 +26,7 @@
 
   <div class="treemap-layout">
     <div class="treemap-content">
-      <svg class="treemap-svg" width="950" height="620"></svg>
+      <svg class="treemap-svg" width="1400" height="850"></svg>
       <div id="year-slider" class="slider"></div>
     </div>
 
@@ -46,7 +46,7 @@
     let dataset = [];
 
     function main() {
-      const width = 950, height = 620;
+      const width = 1400, height = 850;
 
       svg = d3.select("svg")
         .attr("viewBox", [0, 0, width, height]);
@@ -68,7 +68,7 @@
       ]);
 
       // *** REPLACE THIS URL with the WordPress media URL for outputGlobal.json ***
-      d3.json("data/outputGlobal.json").then(rawData => {
+      d3.json("data/outputGlobal_labeled.json").then(rawData => {
         dataset = [];
         rawData.forEach(paper => {
           const year = +paper.publication_year;
@@ -126,7 +126,7 @@
     }
 
     function update(startYear, endYear) {
-      const width = 950, height = 620;
+      const width = 1400, height = 850;
 
       const data = dataset.filter(d =>
         +d.publication_year >= startYear && +d.publication_year <= endYear
@@ -193,13 +193,13 @@
 
         const boxW = d.x1 - d.x0 - 8;
         const boxH = d.y1 - d.y0 - 6;
-        if (boxW < 24 || boxH < 16) return;
+        if (boxW < 60 || boxH < 25) return;
 
         const size = Math.max(6, Math.min(16, Math.sqrt((boxW * boxH) / 250)));
         text.style("font-size", size + "px");
 
         const approxCharW = size * 0.55;
-        const maxCharsPerLine = Math.floor(boxW / approxCharW);
+        const maxCharsPerLine = Math.floor(boxW / approxCharW)+5;
         const words = d.data.name.split(" ");
         let lines = [], current = "";
 
@@ -214,7 +214,7 @@
         }
         if (current) lines.push(current);
 
-        const maxLines = Math.floor(boxH / (size * 1.3));
+        const maxLines = Math.floor(boxH / (size * 3));
         lines = lines.slice(0, maxLines);
         if (lines.length === 0) return;
 
