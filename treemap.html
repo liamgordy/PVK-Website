@@ -21,7 +21,7 @@
   <div class="body-content">
 
   <div class="treemap-controls">
-    <button class="control-button" onclick="toggleMode()">Show Topics as Colors</button>
+    <button class="control-button" onclick="toggleMode()">Group by Topics</button>
   </div>
 
   <div class="treemap-layout">
@@ -275,7 +275,7 @@
       button.property("disabled", true);
       inverted = !inverted;
       g.selectAll("g.node").remove();
-      button.text(inverted ? "Show Institutes as Colors" : "Show Topics as Colors");
+      button.text(inverted ? "Group by Institutes" : "Group by Topics");
       const [startYear, endYear] = slider.noUiSlider.get().map(Number);
       update(startYear, endYear);
       setTimeout(() => button.property("disabled", false), 900);
