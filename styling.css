@@ -25,6 +25,7 @@ a {
   text-decoration: none;
 }
 
+
 .page {
   margin: 0;
   display: flex;
@@ -35,11 +36,48 @@ a {
   padding-top: 70px;
 }
 
+.body-content {
+  margin-top: 2%;
+  flex: 1;
+  width: 100%;
+}
+
 .page-scatter,
 .page-treemap {
   justify-content: center;
   padding: 20px 0;
 }
+
+/* Treemap layout and styles */
+.treemap-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  max-width: 1300px;
+  padding: 8px 20px 20px;
+  margin: 0 auto;
+}
+
+.treemap-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.treemap-info {
+  width: 220px;
+}
+
+.treemap-svg {
+  width: 100%;
+  max-width: 950px;
+  height: auto;
+  display: block;
+}
+
+
 
 .scatter-layout {
   display: flex;
@@ -118,6 +156,13 @@ a {
   align-items: center;
   gap: 12px;
   padding: 10px 14px;
+  transition: transform 0.15s ease, background-color 0.15s ease;
+  transform-origin: left center;
+  cursor: pointer;
+}
+
+.university-button:hover {
+  transform: scale(1.1);
 }
 
 .university-logo {
@@ -137,8 +182,7 @@ a {
 
 .university-button.active {
   background: #8b5cf6;
-  transform: scale(1.3);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .scatter-controls,
@@ -161,13 +205,10 @@ a {
   transition: background-color 0.2s, transform 0.2s;
 }
 
-.control-button:hover {
-  background: #2563eb;
-  transform: translateY(-1px);
-}
+
 
 .slider {
-  width: 300px;
+  max-width: 100%;
   margin: 20px;
 }
 
@@ -270,7 +311,7 @@ nav {
 h1 {
   font-family: 'DM Serif Display', serif;
   font-size: clamp(36px, 5vw, 58px);
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -1px;
   color: var(--ink);
   margin-bottom: 24px;
@@ -427,6 +468,10 @@ footer p {
   font-family: 'DM Serif Display', serif;
   font-size: 15px;
   color: var(--ink-light);
+}
+
+.footer-logo :hover {
+  color: var(--accent);
 }
 
 @keyframes fadeUp {
