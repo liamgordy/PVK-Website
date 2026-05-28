@@ -33,8 +33,8 @@
     <aside class="treemap-info">
       <div class="info-box">
         <h3>Graph explanation</h3>
-        <p>This treemap shows article counts by institute and topic cluster. Hover a tile for details, and use the year slider to filter. The legend to the right matches the tile colors.</p>
-      </div>
+        <p>This treemap shows research paper counts by institute and topic cluster; Toggle the inversion button to switch between grouping modes. Hover a tile for details on paper count, and use the year slider to filter research papers by publication year. The legend to the right matches the tile colors.</p>
+     </div>
     </aside>
   </div>
 
@@ -44,6 +44,10 @@
     let inverted = false;
     let svg, g, tooltip;
     let dataset = [];
+    const combinedScheme = [
+      ...d3.schemeTableau10,
+      ...d3.schemeDark2
+    ];
 
     function main() {
       const width = 1400, height = 850;
@@ -117,11 +121,11 @@
 
     function getColor(domainValues) {
       if (!colorScale) {
-        colorScale = d3.scaleOrdinal(d3.schemeTableau10);
+        colorScale = d3.scaleOrdinal(combinedScheme);
       }
       const current = new Set(colorScale.domain());
       const extended = [...current, ...domainValues.filter(v => !current.has(v))];
-      colorScale.domain(extended);
+      //colorScale.domain(extended);s
       return colorScale;
     }
 

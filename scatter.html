@@ -60,7 +60,7 @@
     <aside class="scatter-info">
       <div class="info-box">
         <h3>Graph explanation</h3>
-        <p>Each circle is a paper from the selected university. The x/y positions reflect embedded semantic coordinates, colors show topic cluster, and circle size scales with citation count. Hover a point for title, year, and citations.</p>
+        <p>Each circle represents a research paper from the selected institute chosen by pressing the corresponding institute button. The X and Y coordinates reflect embedded semantic coordinates. Colors correspond to topic cluster, and circle size scales with citation count. Hover a point for title, year, and citations.</p>
       </div>
     </aside>
   </div>
@@ -68,6 +68,10 @@
   <script>
     let svg, g, tooltip;
     let dataset = [];
+    const combinedScheme = [
+      ...d3.schemeTableau10,
+      ...d3.schemeDark2
+    ];
 
     function selectUniversity(button, file) {
       // Remove active class from all buttons
@@ -118,8 +122,9 @@
         .range([4, 12]);
 
       const subGenres = Array.from(new Set(dataset.map(d => d["cluster"])));
-      const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, subGenres.length)).domain(subGenres);
+      //const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, subGenres.length)).domain(subGenres);
       // const color = d3.scaleOrdinal(d3.schemeTableau10).domain(subGenres);
+      const color = d3.scaleOrdinal(combinedScheme).domain(subGenres);
 
       const points = g.selectAll("circle")
         .data(dataset, d => d.title);
